@@ -1,0 +1,59 @@
+{% extends 'choices.html' %}
+
+{% block graph_content %}
+<div class = 'container' style="margin-left: 5em">
+<!-- bar chart canvas element -->
+<canvas id="myChart" width="700" height="500"></canvas>
+<script>
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: [{% for item in labels %}
+                  "{{item}}",
+              {% endfor %}],
+        datasets: [{
+            backgroundColor: 'rgb(150, 215, 255)',
+            borderColor: 'rgb(0,0,0)',
+            data: {{plot_data}},
+        }]
+    },
+
+    // Configuration options go here
+    options: {responsive: false, legend: {
+            display: false
+         },
+        title: {
+        display: true,
+            fontSize: 28,
+        text: "{{user_name}}'s Commute to Home"},
+        scales: {
+    yAxes: [{
+      scaleLabel: {
+          fontSize: 20,
+        display: true,
+        labelString: 'Commute Time (Minutes)'}}],
+        xAxes: [{
+      scaleLabel: {
+          fontSize: 20,
+        display: true,
+        labelString: 'Departure Time'}}]}}
+});
+
+</script>
+
+<p id="caption" style="margin-top: 0.5em">- The chart above shows how your commute home will change depending upon when you leave work</p>
+</div>
+{% endblock %}
+{% block summary %}
+<div> <h2> Insights to Optimize your Commute</h2>
+<p>   - Your best time to travel to work is {{best_dept}}, where your commute would take {{best_time}} minutes. </p>
+    <p>   - Your worst time to travel to work is {{worst_dept}}, where your commute would take {{worst_time}} minutes. </p>
+    <p>   - Over a 5 day workweek, you could save up to {{save_minutes_week}} minutes by driving to work at optimal times.</p>
+    <p> We hope you enjoyed using the commuter app, and that you will be better prepared to plan for your week. </p>
+</div>
+{% endblock %}

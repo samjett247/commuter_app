@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<! This creates the form at the top of the page to enter in your address>
+<div class="container">
+<form action = '' method = 'POST' id="0">
+  <div class="form-group">
+    <label for="nameID">Please enter your name</label>
+    <input type="user_name" class="form-control" id="nameID" name = 'user_name' placeholder="Your name">
+  </div>
+  <div class="form-group">
+    <label for="homeaddrID">Please enter your home address, or an address near your home</label>
+    <input type="home_address" class="form-control" id="homeaddrID" name = 'home_addr' placeholder="Your home address">
+  </div>
+  <div class="form-group">
+      <label for="workaddrID">Please enter your work address, or a location near your work</label>
+    <input type="work_address" class="form-control" id="workaddrID" aria-describedby="addrHelp" name = 'work_addr' placeholder="Your work address">
+     <small id="addrHelp" class="form-text text-muted">Your name and addresses are utilized once to compute the route times and are not saved.</small>
+  </div>
+  <div class='row' style = 'margin-top: 1.5em' >
+    <div class = 'container' >
+      <div class='row' style = 'margin-bottom: 0.5em; margin-left: 0.15em'>
+      <small id="timewarning" class="form-text text-muted">The website will take 20-30 seconds to estimate your commute times once the <b> Submit </b> button is clicked. </small>
+      </div>
+    <button type="submit" value = 'submit' aria-describedby="timewarning" class="btn btn-primary btn-lg">Submit</button>
+    </div>
+  </div>
+</form>
+  </div>
+{% endblock %}

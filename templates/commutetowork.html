@@ -1,0 +1,51 @@
+{% extends 'choices.html' %}
+
+{% block graph_content %}
+<div class = 'container'>
+<!-- bar chart canvas element -->
+<canvas id="myChart" width="700" height="500"></canvas>
+<script>
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: [{% for item in labels %}
+                  "{{item}}",
+              {% endfor %}],
+        datasets: [{
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(0,0,0)',
+            data: {{plot_data}},
+        }]
+    },
+
+    // Configuration options go here
+    options: {responsive: false, legend: {
+            display: false
+         },
+        title: {
+        display: true,
+            fontSize: 28,
+        text: "{{user_name}}'s Commute to Work"},
+        scales: {
+    yAxes: [{
+      scaleLabel: {
+          fontSize: 20,
+        display: true,
+        labelString: 'Commute Time (Minutes)'}}],
+        xAxes: [{
+      scaleLabel: {
+          fontSize: 20,
+        display: true,
+        labelString: 'Departure Time'}}]}}
+});
+
+</script>
+
+<p id="caption" style="margin-top: 0.5em">-The chart below shows how your commute to work will change depending upon when you leave home</p>
+</div>
+{% endblock %}

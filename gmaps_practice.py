@@ -1,6 +1,7 @@
 
 from googlemaps import Client
 from datetime import datetime
+
 dt = datetime.today()  # Get timezone naive now
 now_int_time = str(dt.timestamp())[0:10]
 print('Now time stamp ' + now_int_time)
@@ -15,6 +16,9 @@ gmaps = Client(API_key)
 
 # def get_duration(origin, destination, dept_time):
 
+origin = '467 college ave, norman, ok'
+destination = 'Work (American Fidelity Assurance Company)'
+dept_time = future_int_time
 directions = gmaps.directions(origin,destination, departure_time = dept_time, traffic_model = 'pessimistic')
 print(directions)
 duration = directions[0]['legs'][0]['duration_in_traffic']['text']
