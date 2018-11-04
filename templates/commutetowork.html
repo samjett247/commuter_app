@@ -1,9 +1,9 @@
 {% extends 'choices.html' %}
 
 {% block graph_content %}
-<div class = 'container'>
+<!--div class = 'container' style="margin-left: 5em">
 <!-- bar chart canvas element -->
-<canvas id="myChart" width="700" height="500"></canvas>
+<canvas id="myChart" width="400" height = "300"></canvas>
 <script>
 
 var ctx = document.getElementById('myChart').getContext('2d');
@@ -17,27 +17,29 @@ var chart = new Chart(ctx, {
                   "{{item}}",
               {% endfor %}],
         datasets: [{
-            backgroundColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgb(255,99,132)',
             borderColor: 'rgb(0,0,0)',
             data: {{plot_data}},
         }]
     },
 
     // Configuration options go here
-    options: {responsive: false, legend: {
+    options: {responsive: true, legend: {
             display: false
          },
-        title: {
+        title: {position: 'bottom',
         display: true,
             fontSize: 28,
         text: "{{user_name}}'s Commute to Work"},
         scales: {
     yAxes: [{
+        ticks: {fontSize:14},
       scaleLabel: {
           fontSize: 20,
         display: true,
         labelString: 'Commute Time (Minutes)'}}],
         xAxes: [{
+        ticks: {fontSize:14},
       scaleLabel: {
           fontSize: 20,
         display: true,
@@ -46,6 +48,16 @@ var chart = new Chart(ctx, {
 
 </script>
 
-<p id="caption" style="margin-top: 0.5em">-The chart below shows how your commute to work will change depending upon when you leave home</p>
-</div>
+{% endblock %}
+{% block summary %}
+<h1> <b>Optimize your Commute to Work</b></h1>
+    <br>
+<p style="font-size:1.4vw">   - Your <b>Best Time </b>to travel to work is <b>{{statistics[0]}}</b>, when your commute would take <b>{{statistics[1]}} minutes. </b></p>
+    <br>
+<p style="font-size:1.4vw">   - Your <b>Worst Time</b> to travel to work is <b>{{statistics[2]}}</b>, when your commute would take <b>{{statistics[3]}} minutes. </b></p>
+    <br>
+<p style="font-size:1.4vw">   - Over a 5 day workweek, you could save up to approximately <b>{{statistics[4]}} minutes</b> by driving to work at optimal times.</p>
+    <br>
+    <p style="font-size:1.4vw"> We hope you enjoyed using the commuter app, and that you will be better prepared to plan for your week. </p>
+
 {% endblock %}

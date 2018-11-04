@@ -14,5 +14,10 @@ def gen_labels(time_range, time_marker, time_int):
             else:
                 x_labels[lab] = str(hour-12) + ' ' + time_marker
             hour=hour+1
-            
+        # elif lab%int(30/t_int_minutes) ==0:
+        #     if time_marker == 'am':
+        #         x_labels[lab]=str(hour-1) + ':30 ' + time_marker
+        #     else:
+        #         x_labels[lab] = str(hour-13) + ':30 ' + time_marker
+        #     hour=hour+1
     return x_labels

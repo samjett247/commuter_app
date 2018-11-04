@@ -1,6 +1,55 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    <h2>About Us</h2>
-    <p> Lorem  frfn fin efin rgin</p>
+<div class="jumbotron text-center">
+    <h2 style="font-size: 44px"> About the App </h2>
+</div>
+
+<div class="center text-center" style="margin-left: 16em; margin-right: 16em">
+    <p class = 'lead'>This app was designed to help people get to and from work a little bit more efficiently. The app provides expected commute data, obtained free of charge from <b>Google</b>, in graphs and gives some simple analysis of the best times to compute in a textual form. The Commuter App was built in <b>Python</b> and employs a variety of 3rd-party APIs, CDNs, and general utilities. These external utilities are gratefully acknowledged in the table below. </p>
+  <h2 style="font-size: 28px; color: black">External Dependencies</h2>
+</div>
+<div class="center-block text-center" style="width: 40em">
+    <table class="table text-center">
+  <thead>
+    <tr>
+      <th class = "text-center" scope="col" style = "font-size: 18px">Function/Purpose</th>
+      <th class = "text-center" scope="col" style = "font-size: 18px">Utility Used</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class = "text-center" scope="row">Commute Time API</td>
+      <td><a href="https://developers.google.com/maps/documentation/distance-matrix/start">Google Directions Matrix API</a></td>
+    </tr>
+    <tr>
+      <td class = "text-center" scope="row">Web Server Hosting</td>
+      <td><a href="https://cloud.google.com/kubernetes-engine/docs/">Google Cloud Kubernetes Engine</a></td>
+    </tr>
+    <tr>
+      <td class = "text-center" scope="row">Web Development Framework</td>
+      <td><a href="http://flask.pocoo.org/">Flask for Python</a></td>
+    </tr>
+    <tr>
+      <td class = "text-center" scope="row">Version Control</td>
+      <td><a href="https://github.com/samjett247/commuter_app">GitHub (source code linked)</a></td>
+    </tr>
+    <tr>
+      <td class = "text-center" scope="row">Site Stylesheets/CSS </td>
+      <td><a href="https://getbootstrap.com/docs/3.3/css/">Bootstrap CDN</a></td>
+    </tr>
+    <tr>
+      <td class = "text-center" scope="row">Charts and Graphs</td>
+      <td><a href="https://www.chartjs.org/">Chart.JS CDN</a></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div class="center text-center" style="margin-left: 16em; margin-right: 16em">
+    <p class = 'lead'>Note that the list above is not exhaustive. Many other Python modules and nested dependencies were employed to create this website, and the author is thankful for the free usage of each piece that allowed the creation of this web application. </p>
+      <p class = 'lead'><a href="https://samjett.com">About the Author</a></p>
+  <br>
+  <br>
+</div>
+<div class="center-block text-center" style="width: 40em">
 {% endblock %}
