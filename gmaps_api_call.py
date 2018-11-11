@@ -7,14 +7,11 @@ def obtain_commute_times(origin, destination, time_range, time_int):
     import numpy as np
     import time
 
-<<<<<<< HEAD
     # Import api key from apikey.py
     from apikey import gmaps_dir_matrix_key
 
-    API_key = gmaps_dir_matrix_key
-=======
-    API_key = '' # Insert your Google Distance Matrix API Key here
->>>>>>> e49af481ee807084bb8afb7397e8471c1b4d5980
+    API_key = gmaps_dir_matrix_key # Insert your Google Distance Matrix API Key here
+
     gmaps = Client(API_key)
 
     # The time interval on x-axis between each api call/data point
