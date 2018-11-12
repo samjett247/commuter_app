@@ -8,10 +8,10 @@ from compute_statistics import compute_statistics
 import os
 
 # From home (fh) time range
-fh_time_range = (6,10)
+fh_time_range = (1,14)
 
 # From work (fw) time range
-fw_time_range = (15,19)
+fw_time_range = (15, 15)
 
 # Define the time intervals of the predictions (in seconds)
 time_int = 900 # Seconds
@@ -88,4 +88,4 @@ def result():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5002, host='0.0.0.0')
+    app.run(debug=True, port=8080, host='0.0.0.0')

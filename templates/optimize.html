@@ -10,20 +10,21 @@
     <input type="user_name" class="form-control" id="nameID" name = 'user_name' placeholder="Your name">
   </div>
   <div class="form-group">
-    <label for="homeaddrID">Please enter your home address, or an address near your home, followed by the city and state</label>
+    <label for="homeaddrID">Please enter your home address, or an address near your home, followed by city and state</label>
     <input type="home_address" class="form-control" id="homeaddrID" name = 'home_addr' placeholder="Your home address">
   </div>
   <div class="form-group">
-      <label for="workaddrID">Please enter your work address, or a location near your work, followed by the city and state</label>
+      <label for="workaddrID">Please enter your work address, or a location near your work, followed by city and state</label>
     <input type="work_address" class="form-control" id="workaddrID" aria-describedby="addrHelp" name = 'work_addr' placeholder="Your work address">
      <small id="addrHelp" class="form-text text-muted">Your name and addresses are utilized once to compute the route times and are not saved.</small>
   </div>
-  <div class='row' style = 'margin-top: 1.5em' >
+  <div class='row' style = 'margin-top: 1em' >
     <div class = 'container' >
-      <div class='row' style = 'margin-bottom: 0.5em; margin-left: 0.15em'>
-      <small id="timewarning" class="form-text text-muted">The website will take 20-30 seconds to estimate your commute times once the <b> Submit </b> button is clicked. </small>
-      </div>
     <button type="submit" value = 'submit' aria-describedby="timewarning" class="btn btn-primary btn-lg">Submit</button>
+    <div class='row' style = 'margin-top: 0.25em; margin-bottom: 0.5em; margin-left: 0.15em'>
+      <small id="timewarning" class="form-text text-muted">The website will take 20-30 seconds to estimate your commute times once the <b> Submit </b> button is clicked. </small>
+      </div> 
+    
     </div>
   </div>
 </form>

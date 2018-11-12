@@ -32,22 +32,28 @@ def obtain_commute_times(origin, destination, time_range, time_int):
 
     # Pass the timezone to datetime.today to get the current time in that timezone
     location_tz = pytz.timezone(tz)
+    # location_tz = pytz.timezone("US/Pacific")
     today =datetime.now(location_tz)
-    
+    ct_time = datetime.now(pytz.timezone("America/Chicago")) # Get central time
+
     # This gives the nearest wednesday at midnight to the current data
     print("Today is ")
     print(today)
     today_ind = today.weekday()
     day_modif = 16 - today_ind  # 16 to get the nearest wednesday, two weeks from now
     wednesday_mid = today + timedelta(days=day_modif, seconds=-today.second, minutes=-today.minute, hours=-today.hour)
+    print(today.hour)
     wed_mid_int = int(wednesday_mid.strftime("%s"))
 
     # This converts the start time into an integer time on monday
     hour_range_depart = time_range
 
-    # This builds your time array based on the start time and end time monday
-    start_time = wed_mid_int + hour_range_depart[0] * 3600
-    end_time = wed_mid_int + hour_range_depart[1] * 3600
+    # Calculate time diff from central time
+    time_diff_ct = int(int(today.strftime("%s")) - int(ct_time.strftime("%s")))
+
+    # This builds your time array based on the start time and end time monday and the difference between the time zone of interest and the central time zone
+    start_time = wed_mid_int + (hour_range_depart[0]) * 3600 + time_diff_ct
+    end_time = wed_mid_int + (hour_range_depart[1]) * 3600 +time_diff_ct
     num_intervals = int((end_time - start_time) / time_interval)
 
     # Use linspace to make our integer times
@@ -57,7 +63,7 @@ def obtain_commute_times(origin, destination, time_range, time_int):
     dest_mat = [destination]
 
     commute_times = [] * len(times)
-
+    print(times)
     for i in range(0, len(times)):
         dept_time_iter = times[i]
         directions = gmaps.distance_matrix(org_mat, dest_mat, departure_time=dept_time_iter,
