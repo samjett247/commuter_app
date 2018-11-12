@@ -6,6 +6,7 @@ def obtain_commute_times(origin, destination, time_range, time_int):
     from datetime import datetime, timedelta
     import numpy as np
     import time
+    import pytz
 
     # Import api key from apikey.py
     from apikey import gmaps_dir_matrix_key
@@ -17,9 +18,25 @@ def obtain_commute_times(origin, destination, time_range, time_int):
     # The time interval on x-axis between each api call/data point
     time_interval = time_int  # time interval in Seconds
     t_int_minutes = time_interval / 60
+    
+    # Define the correct timezone via the destination
+    # Geocode the input address
+    geocode_result = gmaps.geocode(destination)
+    # Obtain latitude and longitude information
+    lat = geocode_result[0]['geometry']['location']['lat']
+    lng = geocode_result[0]['geometry']['location']['lng']
 
+    # Obtain the timezone for the geocoded address longitude and latitude
+    timezone = gmaps.timezone((lat, lng))
+    tz = timezone['timeZoneId']
+
+    # Pass the timezone to datetime.today to get the current time in that timezone
+    location_tz = pytz.timezone(tz)
+    today =datetime.now(location_tz)
+    
     # This gives the nearest wednesday at midnight to the current data
-    today = datetime.today()
+    print("Today is ")
+    print(today)
     today_ind = today.weekday()
     day_modif = 16 - today_ind  # 16 to get the nearest wednesday, two weeks from now
     wednesday_mid = today + timedelta(days=day_modif, seconds=-today.second, minutes=-today.minute, hours=-today.hour)
@@ -29,7 +46,6 @@ def obtain_commute_times(origin, destination, time_range, time_int):
     hour_range_depart = time_range
 
     # This builds your time array based on the start time and end time monday
-
     start_time = wed_mid_int + hour_range_depart[0] * 3600
     end_time = wed_mid_int + hour_range_depart[1] * 3600
     num_intervals = int((end_time - start_time) / time_interval)
@@ -37,11 +53,8 @@ def obtain_commute_times(origin, destination, time_range, time_int):
     # Use linspace to make our integer times
     times = np.linspace(start_time, end_time, num_intervals + 1, endpoint=True).astype(np.int)
 
-    org = origin
-    dest = destination
-
-    org_mat = [org]
-    dest_mat = [dest]
+    org_mat = [origin]
+    dest_mat = [destination]
 
     commute_times = [] * len(times)
 
@@ -53,5 +66,3 @@ def obtain_commute_times(origin, destination, time_range, time_int):
         commute_times.append(round(commute_time/60, 1))
 
     return commute_times
-
-
