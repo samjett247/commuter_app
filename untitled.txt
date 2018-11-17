@@ -1,0 +1,82 @@
+def convert_timezone_to_utc_epoch(timestamp_string, local_tz):
+
+    ts = datetime.strptime(timestamp_string, '%Y-%m-%d %H:%M:%S')
+    ts = local_tz.localize(ts)
+    ts = str(ts.astimezone(pytz.utc))[0:19]
+    print('UTC timestamp is: {}'.format(ts))
+    epoch = int(time.mktime(time.strptime(ts, '%Y-%m-%d %H:%M:%S')))
+    print('Epoch for API call is: {}'.format(epoch))
+    return epoch
+
+def obtain_commute_times(origin, destination, time_range, time_int):
+    '''
+    This function will obtain the commute times from origin to destination.
+    '''
+    from googlemaps import Client
+    from datetime import datetime, timedelta
+    import numpy as np
+    import time
+    import pytz
+
+    # Import api key from apikey.py
+    from apikey import gmaps_dir_matrix_key
+
+    API_key = gmaps_dir_matrix_key # Insert your Google Distance Matrix API Key here
+
+    gmaps = Client(API_key)
+
+    # The time interval on x-axis between each api call/data point
+    time_interval = time_int  # time interval in Seconds
+    t_int_minutes = time_interval / 60
+    
+    # Define the correct timezone via the destination
+    # Geocode the input address
+    geocode_result = gmaps.geocode(destination)
+    # Obtain latitude and longitude information
+    lat = geocode_result[0]['geometry']['location']['lat']
+    lng = geocode_result[0]['geometry']['location']['lng']
+
+    # Obtain the timezone for the geocoded address longitude and latitude
+    timezone = gmaps.timezone((lat, lng))
+    tz = timezone['timeZoneId']
+
+    # Pass the timezone to datetime.today to get the current time in that timezone
+    location_tz = pytz.timezone(tz)
+    location_tz = pytz.timezone("US/Pacific")
+    today =datetime.now(location_tz)
+
+    # This gives the nearest wednesday at midnight to the current data
+    today_ind = today.weekday()
+    day_modif = 16 - today_ind  # 16 to get the nearest wednesday, two weeks from now
+    wednesday_mid = today + timedelta(days=day_modif, seconds=-today.second, minutes=-today.minute, hours=-today.hour)
+    print(today.hour)
+    wed_mid_int = int(wednesday_mid.strftime("%s"))
+
+    # Create the first and last query times
+    first_query = wednesday_mid+timedelta(hours = time_range[0])
+    first_q = first_query.strftime("%Y-%m-%d %H:%M:%S")
+    last_query = wednesday_mid+timedelta(hours = time_range[1])
+    last_q = last_query.strftime("%Y-%m-%d %H:%M:%S")
+    print(first_q)
+    print(last_q)
+    # Convert query times to Epoch time
+    start_time = convert_timezone_to_utc_epoch(first_q, location_tz)
+    end_time = convert_timezone_to_utc_epoch(last_q, location_tz)
+    num_intervals = int((end_time - start_time) / time_interval)
+
+    # Use linspace to make our integer times
+    times = np.linspace(start_time, end_time, num_intervals + 1, endpoint=True).astype(np.int)
+
+    org_mat = [origin]
+    dest_mat = [destination]
+
+    commute_times = [] * len(times)
+    print(times)
+    for i in range(0, len(times)):
+        dept_time_iter = times[i]
+        directions = gmaps.distance_matrix(org_mat, dest_mat, departure_time=dept_time_iter,
+                                           traffic_model='pessimistic')
+        commute_time = directions['rows'][0]['elements'][0]['duration_in_traffic']['value']
+        commute_times.append(round(commute_time/60, 1))
+
+    return commute_times

@@ -8,10 +8,10 @@ from compute_statistics import compute_statistics
 import os
 
 # From home (fh) time range
-fh_time_range = (1,14)
+fh_time_range = (6,10)
 
 # From work (fw) time range
-fw_time_range = (15, 15)
+fw_time_range = (13, 17)
 
 # Define the time intervals of the predictions (in seconds)
 time_int = 900 # Seconds
