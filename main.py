@@ -6,12 +6,14 @@ from gmaps_api_call import obtain_commute_times
 from generate_labels import gen_labels
 from compute_statistics import compute_statistics
 import os
+# import logging 
+# import requests
 
 # From home (fh) time range
 fh_time_range = (6,10)
 
 # From work (fw) time range
-fw_time_range = (13, 17)
+fw_time_range = (15, 19)
 
 # Define the time intervals of the predictions (in seconds)
 time_int = 900 # Seconds
@@ -19,6 +21,32 @@ time_int = 900 # Seconds
 
 # Create app variable
 app = Flask(__name__)
+
+# Define Google Analytics tracking ID
+GA_TRACKING_ID = ''
+
+
+def track_event(category, action, label=None, value=0):
+    data = {
+        'v': '1',  # API Version.
+        'tid': GA_TRACKING_ID,  # Tracking ID / Property ID.
+        # Anonymous Client Identifier. Ideally, this should be a UUID that
+        # is associated with particular user, device, or browser instance.
+        'cid': '555',
+        't': 'event',  # Event hit type.
+        'ec': category,  # Event category.
+        'ea': action,  # Event action.
+        'el': label,  # Event label.
+        'ev': value,  # Event value, must be an integer
+    }
+
+    response = requests.post(
+        'http://www.google-analytics.com/collect', data=data)
+
+    # If the request fails, this will raise a RequestException. Depending
+    # on your application's needs, this may be a non-error and can be caught
+    # by the caller.
+    response.raise_for_status()
 
 
 # Create route for the app
@@ -28,11 +56,13 @@ def favicon():
                           'favicon.ico',mimetype='image/vnd.microsoft.icon')
 
 @app.route('/')
+# track_event(category='Visits', action='site visits')
 def index():
     # Return the template
     return render_template('home.html')
 
 @app.route('/about')
+# track_event(category='Visits', action='about visits')
 def about():
     return render_template('about.html')
 
@@ -76,7 +106,7 @@ def optimize_commute():
 
         elif request.form['route']=='from work':
             return render_template('commutefromwork.html', user_name=user_name, labels=fw_labels, plot_data=fw_commute_times, statistics=fw_statistics)
-
+    # track_event(category='Commute Tracked', action='commute tracked')
     return render_template('optimize.html')
 
 
