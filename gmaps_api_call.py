@@ -11,7 +11,6 @@ def convert_timezone_to_utc_epoch(timestamp_string, local_tz):
     '''
     ts = datetime.strptime(timestamp_string, '%Y-%m-%d %H:%M:%S')
     ts = str(ts)[0:19] #MODIFIED such that the input can be in local time!
-    
     # Compute the Epoch time for the API call
     epoch = int(time.mktime(time.strptime(ts, '%Y-%m-%d %H:%M:%S')))
     return epoch
