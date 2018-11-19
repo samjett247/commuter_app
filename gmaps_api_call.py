@@ -10,7 +10,7 @@ def convert_timezone_to_utc_epoch(timestamp_string, local_tz):
     input is in GMT/UTC time
     '''
     ts = datetime.strptime(timestamp_string, '%Y-%m-%d %H:%M:%S')
-    ts = str(ts.astimezone(local_tz))[0:19] #MODIFIED such that the input can be in local time!
+    ts = str(ts)[0:19] #MODIFIED such that the input can be in local time!
     
     # Compute the Epoch time for the API call
     epoch = int(time.mktime(time.strptime(ts, '%Y-%m-%d %H:%M:%S')))
@@ -81,7 +81,6 @@ def obtain_commute_times(origin, destination, time_range, time_int):
     dest_mat = [destination]
 
     commute_times = [] * len(times)
-    print(times)
     
     for i in range(0, len(times)):
         # Call the google distance matrix api for each departure time
