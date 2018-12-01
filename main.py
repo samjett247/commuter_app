@@ -82,8 +82,12 @@ def optimize_commute():
         session['user_name'] = request.form['user_name']
         session['home_addr'] = request.form['home_addr']
         session["work_addr"]  = request.form['work_addr']
-        session['departure_from_home']  = request.form["departure_from_home"]
+        session['departure_from_home'] = request.form["departure_from_home"]
         session['departure_from_work']= request.form['departure_from_work']
+
+        departure_from_home = session['departure_from_home']
+        departure_from_work = session['departure_from_work']
+        
         # Compute the fh and fw time ranges based on the entries into the form, +- 2 hours
         fh_average = int(departure_from_home[0:2])
         fh_time_range = (fh_average-2,fh_average+2)
