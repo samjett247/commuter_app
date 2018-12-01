@@ -77,13 +77,13 @@ def optimize_commute():
     print(request.form)
     if request.method == 'POST' and request.form.get('home_addr')!= None:
 
-        # Take the parameters from the form and store them in variabls
+        # Take the parameters from the form and store them in the session dict for easier access
 
-        user_name = request.form['user_name']
-        home_addr = request.form['home_addr']
-        work_addr = request.form['work_addr']
-        departure_from_home = request.form["departure_from_home"]
-        departure_from_work = request.form['departure_from_work']
+        session['user_name'] = request.form['user_name']
+        session['home_addr'] = request.form['home_addr']
+        session["work_addr"]  = request.form['work_addr']
+        session['departure_from_home']  = request.form["departure_from_home"]
+        session['departure_from_work']= request.form['departure_from_work']
         # Compute the fh and fw time ranges based on the entries into the form, +- 2 hours
         fh_average = int(departure_from_home[0:2])
         fh_time_range = (fh_average-2,fh_average+2)
@@ -94,49 +94,33 @@ def optimize_commute():
         # Call the google API to get the route info for the person
         # Call api to get  commute times
         # global fh_commute_times, fw_commute_times
-        fh_commute_times = obtain_commute_times(home_addr, work_addr, fh_time_range, time_int)
-        fw_commute_times = obtain_commute_times(work_addr, home_addr, fw_time_range, time_int)
+        session['fh_commute_times'] = obtain_commute_times(home_addr, work_addr, fh_time_range, time_int)
+        session['fw_commute_times'] = obtain_commute_times(work_addr, home_addr, fw_time_range, time_int)
 
         # Generate the labels for both cases
         # global fh_labels, fw_labels
-        fh_labels = gen_labels(fh_time_range, time_int)
-        fw_labels = gen_labels(fw_time_range, time_int)
+        session['fh_labels'] = fh_labels = gen_labels(fh_time_range, time_int)
+        session['fw_labels'] = gen_labels(fw_time_range, time_int)
 
         # Compute statistics for both cases
-        fh_statistics = compute_statistics(fh_commute_times, fh_labels)
-        fw_statistics = compute_statistics(fw_commute_times, fw_labels)
-
-        # Add all variables to the current session for use in other pages
-        session['user_name']=user_name
-        session['home_addr'] = home_addr
-        session["work_addr"] = work_addr
-        session['departure_from_home'] = departure_from_home
-        session['departure_from_work'] = departure_from_work
-        session['fh_commute_times'] = fh_commute_times
-        session['fh_labels'] = fh_labels
-        session['fh_statistics'] = fh_statistics
-        session['fw_commute_times'] = fw_commute_times
-        session['fw_labels'] = fw_labels
-        session['fw_statistics'] = fw_statistics
+        session['fh_statistics'] = compute_statistics(fh_commute_times, fh_labels)
+        session['fw_statistics']= compute_statistics(fw_commute_times, fw_labels)
 
         # Create the arguments package of variables to pass between the pages. The order is important and shouldnt be changed, but can be added to if needed
         return redirect(url_for(".results"))
 
-    elif request.method == 'POST' and request.form.get('route') != None:
-        if request.form['route']=='from home':
-            return render_template('commutetowork.html', user_name = user_name, labels=fh_labels, plot_data=fh_commute_times, statistics=fh_statistics)
-
-        elif request.form['route']=='from work':
-            return render_template('commutefromwork.html', user_name=user_name, labels=fw_labels, plot_data=fw_commute_times, statistics=fw_statistics)
     # track_event(category='Commute Tracked', action='commute tracked')
     return render_template('optimize.html')
 
+
+# This creates the route for the fromhome data presentation page
 @app.route('/results/fromhome/', methods = ['POST', 'GET'])
 def fromhome():
     if request.method =="POST" and request.form['route']=='from work':
             return redirect(url_for(".fromwork"))
     return render_template("commutetowork.html", user_name = session['user_name'], labels=session['fh_labels'], plot_data=session['fh_commute_times'], statistics=session['fh_statistics'])
 
+# This creates the route for the fromwork data presentation page
 @app.route('/results/fromwork/', methods = ['POST', 'GET'])
 def fromwork():
     if request.method =="POST" and request.form['route']=='from home':
