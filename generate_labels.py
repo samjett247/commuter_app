@@ -2,14 +2,14 @@ import numpy as np
 
 def gen_labels(time_range, time_int):
 
-    t_int_minutes = int(time_int/60)
+    t_int_minutes = 15
 
     # Build the from xvalues as a linear 
     # fh_x_vals = np.linspace(fh_time_range[0], fh_time_range[1], 6*fh_time_range[1]-fh_time_range[0])
-    x_values = np.linspace(time_range[0], time_range[1], (time_range[1]-time_range[0])/(t_int_minutes/60) + 1, endpoint = True)
+    x_values = np.linspace(time_range[0], time_range[1], (time_range[1]-time_range[0])/(.25) + 1, endpoint = True)
     labels = []
     for lab in range(0, len(x_values)):
-#         print(x_values[lab])
+        print(x_values[lab])
         if x_values[lab]%1 ==0:        
             if x_values[lab]>=1 and x_values[lab]<24:
                 if x_values[lab]<12:

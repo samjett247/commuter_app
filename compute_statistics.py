@@ -30,6 +30,12 @@ def compute_statistics(commute_times, labels):
     # Map the differences to minute values
     diff_map = {1:"45", 2:"30",3:"15"}
 
+    # DEBUGGING
+    print("The best depart ind is "+ str(best_depart_ind))
+    print("The worst depart ind is " + str(worst_depart_ind))
+    print("The labels are ")
+    print(labels)
+    
     # Find labels for best/worst departure times
     for i in [best_depart_ind, worst_depart_ind]:
         depart_time = labels[i]
