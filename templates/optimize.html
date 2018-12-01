@@ -2,21 +2,29 @@
 
 {% block body %}
 
-<! This creates the form at the top of the page to enter in your address>
+<!-- This creates the form at the top of the page to enter in your address> -->
 <div class="container">
 <form action = '' method = 'POST' id="0">
   <div class="form-group">
     <label for="nameID">Please enter your name</label>
-    <input type="user_name" class="form-control" id="nameID" name = 'user_name' placeholder="Your name">
+    <input type="user_name" class="form-control" id="nameID" name = 'user_name' placeholder="Your name" required>
   </div>
   <div class="form-group">
-    <label for="homeaddrID">Please enter your home address, or an address near your home, followed by city and state</label>
-    <input type="home_address" class="form-control" id="homeaddrID" name = 'home_addr' placeholder="Your home address">
+    <label for="homeaddrID">Please enter your home address, or a location near your home, followed by city and state</label>
+    <input class="form-control" id="homeaddrID" name="home_addr" placeholder="Your home address" required>
   </div>
   <div class="form-group">
       <label for="workaddrID">Please enter your work address, or a location near your work, followed by city and state</label>
-    <input type="work_address" class="form-control" id="workaddrID" aria-describedby="addrHelp" name = 'work_addr' placeholder="Your work address">
+    <input type="work_address" class="form-control" id="workaddrID" aria-describedby="addrHelp" name = 'work_addr' placeholder="Your work address" required>
      <small id="addrHelp" class="form-text text-muted">Your name and addresses are utilized once to compute the route times and are not saved.</small>
+  </div>
+    <div class = "form-group">
+    <label for="departure-time-from-home">Please enter a typical time you might leave for work</label>
+      <input type="time" class="form-control" name = "departure_from_home" id="departure-time-from-home" value="08:00:00" step="3600" style="width:120px"required>
+  </div>
+    <div class = "form-group">
+    <label for="departure-time-from-work">Please enter a typical time you might leave for home</label>
+      <input type="time" class="form-control" name = "departure_from_work" id="departure-time-from-home" value="17:00:00" step="3600" style="width:120px"required>
   </div>
   <div class='row' style = 'margin-top: 1em' >
     <div class = 'container' >

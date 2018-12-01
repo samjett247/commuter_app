@@ -6,6 +6,7 @@ from gmaps_api_call import obtain_commute_times
 from generate_labels import gen_labels
 from compute_statistics import compute_statistics
 import os
+import sys
 # import logging 
 # import requests
 
@@ -66,21 +67,32 @@ def index():
 def about():
     return render_template('about.html')
 
-# @app.route('/articles')
-# def articles():
-#     return render_template('articles.html', articles= Articles)
 
 @app.route('/optimize', methods = ['POST', 'GET'])
 def optimize_commute():
-    # Define data
-    legend = 'How much Zach is a good boy for Santa'
+
     print(request.form)
     if request.method == 'POST' and request.form.get('home_addr')!= None:
+        # Delete any existing variables previously entered into this form
+        var_list = ['user_name', 'home_addr', 'work_addr', 'departure_from_home', 'departure_from_work', 'fh_commute_times', 'fw_commute_times', 'fh_labels',
+        'fw_labels', 'fh_statistics', 'fw_statistics']
+        for var in var_list:
+            if var in locals() or var in globals():
+                del var
         # Create global variables based on users defined name and addresses
-        global user_name, home_addr, work_addr
+        global user_name, home_addr, work_addr, departure_from_home, departure_from_work
         user_name = request.form['user_name']
         home_addr = request.form['home_addr']
         work_addr = request.form['work_addr']
+        departure_from_home = request.form["departure_from_home"]
+        departure_from_work = request.form['departure_from_work']
+
+        # Compute the fh and fw time ranges based on the entries into the form, +- 2 hours
+        fh_average = int(departure_from_home[0:2])
+        fh_time_range = (fh_average-2,fh_average+2)
+
+        fw_average = int(departure_from_work[0:2])
+        fw_time_range = (fw_average-2,fw_average+2)
 
         # Call the google API to get the route info for the person
         # Call api to get  commute times
@@ -90,8 +102,8 @@ def optimize_commute():
 
         # Generate the labels for both cases
         global fh_labels, fw_labels
-        fh_labels = gen_labels(fh_time_range, 'am', time_int)
-        fw_labels = gen_labels(fw_time_range, 'pm', time_int)
+        fh_labels = gen_labels(fh_time_range, time_int)
+        fw_labels = gen_labels(fw_time_range, time_int)
 
         # Compute statistics for both cases
         global fh_statistics, fw_statistics

@@ -1,23 +1,33 @@
-def gen_labels(time_range, time_marker, time_int):
+import numpy as np
+
+def gen_labels(time_range, time_int):
 
     t_int_minutes = int(time_int/60)
 
-    # Build the from home (fh) xlabels from the time range
+    # Build the from xvalues as a linear 
     # fh_x_vals = np.linspace(fh_time_range[0], fh_time_range[1], 6*fh_time_range[1]-fh_time_range[0])
-    x_labels = (int((time_range[1]-time_range[0])*60/t_int_minutes)+1)*['']
-    hour = time_range[0]
-
-    for lab in range(0, len(x_labels)+1):
-        if lab%int(60/t_int_minutes) ==0:
-            if time_marker == 'am':
-                x_labels[lab]=str(hour) + ' ' + time_marker
+    x_values = np.linspace(time_range[0], time_range[1], (time_range[1]-time_range[0])/(t_int_minutes/60) + 1, endpoint = True)
+    labels = []
+    for lab in range(0, len(x_values)):
+#         print(x_values[lab])
+        if x_values[lab]%1 ==0:        
+            if x_values[lab]>=1 and x_values[lab]<24:
+                if x_values[lab]<12:
+                    labels.append(str(int(x_values[lab]))+' am')
+                elif x_values[lab]==12:
+                    labels.append(str(int(x_values[lab]))+ ' pm')
+                else:
+                    labels.append(str(int(x_values[lab]-12))+' pm')
+            elif x_values[lab]<1:
+                if x_values[lab]==0:
+                    labels.append(str(int(x_values[lab]+12))+' am')
+                else:  
+                    labels.append(str(int(x_values[lab]+12))+' pm')
             else:
-                x_labels[lab] = str(hour-12) + ' ' + time_marker
-            hour=hour+1
-        # elif lab%int(30/t_int_minutes) ==0:
-        #     if time_marker == 'am':
-        #         x_labels[lab]=str(hour-1) + ':30 ' + time_marker
-        #     else:
-        #         x_labels[lab] = str(hour-13) + ':30 ' + time_marker
-        #     hour=hour+1
-    return x_labels
+                if x_values[lab]==24:
+                    labels.append(str(int(x_values[lab]-12))+' am')
+                else:
+                    labels.append(str(int(x_values[lab]-24))+' am')
+        else:
+            labels.append('')
+    return labels
