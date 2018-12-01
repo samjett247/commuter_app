@@ -23,6 +23,9 @@ time_int = 900 # Seconds
 # Create app variable
 app = Flask(__name__)
 
+# Add the secret generator for the session key
+app.secret_key = os.urandom(24)
+
 # Define Google Analytics tracking ID
 GA_TRACKING_ID = ''
 
@@ -155,5 +158,5 @@ def results():
 
 
 if __name__ == "__main__":
-    app.secret_key = ".-commuter app secret key.."
+    app.secret_key = os.urandom(24)
     app.run(debug=True, port=8080, host='0.0.0.0')
