@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, redirect, url_for, session
 import numpy as np
 
 from gmaps_api_call import obtain_commute_times
@@ -73,20 +73,14 @@ def optimize_commute():
 
     print(request.form)
     if request.method == 'POST' and request.form.get('home_addr')!= None:
-        # Delete any existing variables previously entered into this form
-        var_list = ['user_name', 'home_addr', 'work_addr', 'departure_from_home', 'departure_from_work', 'fh_commute_times', 'fw_commute_times', 'fh_labels',
-        'fw_labels', 'fh_statistics', 'fw_statistics']
-        for var in var_list:
-            if var in locals() or var in globals():
-                del var
-        # Create global variables based on users defined name and addresses
-        global user_name, home_addr, work_addr, departure_from_home, departure_from_work
+
+        # Take the parameters from the form and store them in variabls
+
         user_name = request.form['user_name']
         home_addr = request.form['home_addr']
         work_addr = request.form['work_addr']
         departure_from_home = request.form["departure_from_home"]
         departure_from_work = request.form['departure_from_work']
-
         # Compute the fh and fw time ranges based on the entries into the form, +- 2 hours
         fh_average = int(departure_from_home[0:2])
         fh_time_range = (fh_average-2,fh_average+2)
@@ -96,21 +90,34 @@ def optimize_commute():
 
         # Call the google API to get the route info for the person
         # Call api to get  commute times
-        global fh_commute_times, fw_commute_times
+        # global fh_commute_times, fw_commute_times
         fh_commute_times = obtain_commute_times(home_addr, work_addr, fh_time_range, time_int)
         fw_commute_times = obtain_commute_times(work_addr, home_addr, fw_time_range, time_int)
 
         # Generate the labels for both cases
-        global fh_labels, fw_labels
+        # global fh_labels, fw_labels
         fh_labels = gen_labels(fh_time_range, time_int)
         fw_labels = gen_labels(fw_time_range, time_int)
 
         # Compute statistics for both cases
-        global fh_statistics, fw_statistics
         fh_statistics = compute_statistics(fh_commute_times, fh_labels)
         fw_statistics = compute_statistics(fw_commute_times, fw_labels)
 
-        return render_template('choices.html')
+        # Add all variables to the current session for use in other pages
+        session['user_name']=user_name
+        session['home_addr'] = home_addr
+        session["work_addr"] = work_addr
+        session['departure_from_home'] = departure_from_home
+        session['departure_from_work'] = departure_from_work
+        session['fh_commute_times'] = fh_commute_times
+        session['fh_labels'] = fh_labels
+        session['fh_statistics'] = fh_statistics
+        session['fw_commute_times'] = fw_commute_times
+        session['fw_labels'] = fw_labels
+        session['fw_statistics'] = fw_statistics
+
+        # Create the arguments package of variables to pass between the pages. The order is important and shouldnt be changed, but can be added to if needed
+        return redirect(url_for(".results"))
 
     elif request.method == 'POST' and request.form.get('route') != None:
         if request.form['route']=='from home':
@@ -121,13 +128,32 @@ def optimize_commute():
     # track_event(category='Commute Tracked', action='commute tracked')
     return render_template('optimize.html')
 
+@app.route('/results/fromhome/', methods = ['POST', 'GET'])
+def fromhome():
+    if request.method =="POST" and request.form['route']=='from work':
+            return redirect(url_for(".fromwork"))
+    return render_template("commutetowork.html", user_name = session['user_name'], labels=session['fh_labels'], plot_data=session['fh_commute_times'], statistics=session['fh_statistics'])
 
-@app.route('/result', methods = ['POST', 'GET'])
-def result():
-   if request.method == 'POST':
-      result = request.form
-      return render_template("results.html",result = result)
+@app.route('/results/fromwork/', methods = ['POST', 'GET'])
+def fromwork():
+    if request.method =="POST" and request.form['route']=='from home':
+            return redirect(url_for(".fromhome"))
+    return render_template("commutefromwork.html", user_name = session['user_name'], labels=session['fw_labels'], plot_data=session['fw_commute_times'], statistics=session['fw_statistics'])
+
+@app.route('/results/', methods = ['POST', 'GET'])
+def results():
+    # Interpret the arguments from the call to results to send to the desired 
+    # args = request.args.get("args")
+    if request.method =="POST":
+        if request.form['route']=='from home':
+            return redirect(url_for(".fromhome"))
+        if request.form['route']=='from work':
+            return redirect(url_for(".fromwork"))
+    return render_template("choices.html")
+
+
 
 
 if __name__ == "__main__":
+    app.secret_key = ".-commuter app secret key.."
     app.run(debug=True, port=8080, host='0.0.0.0')
