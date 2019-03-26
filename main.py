@@ -26,6 +26,9 @@ app = Flask(__name__)
 # Add the secret generator for the session key
 app.secret_key = os.urandom(24)
 
+# Define the session to be permanent
+departure_from_home = session['departure_from_home']
+
 # Define Google Analytics tracking ID
 GA_TRACKING_ID = ''
 
