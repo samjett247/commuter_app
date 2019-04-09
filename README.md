@@ -1,8 +1,8 @@
 # commuter_app
 This is my app to provide a page full of graphs and quantitative recommendations on how best to reduce your commute time.
-The website can be accessed ![here](thecommuterapp.com).
+The website can be accessed [here](https://thecommuterapp.com).
 Enjoy!
 
-![FrontScreen](static/images/frontscreen.png)
+![FrontScreen](https://raw.githubusercontent.com/samjett247/commuter_app/master/static/frontscreen.png)
 
 
